@@ -11,11 +11,21 @@ def tuple_order(t1, t2):
 
 class permutation:
     def __init__(self, arr):
+        is_list_of_tuples = isinstance(arr, list) and all(isinstance(item, tuple) for item in arr)
+
         for i in range(len(arr)):
             if i not in arr:
                 raise Exception('Inputs needs to be an array of the integers 0 through to N')
         self.arr = tuple(arr)
         self.len = len(arr)
+
+    @staticmethod
+    def cyclic_notation_to_array(cyclic_notation, n):
+        arr = list(range(n))
+        for cycle in cyclic_notation:
+            for i in range(len(cycle)):
+                arr[cycle[i]] = cycle[(i + 1) % len(cycle)]
+        return arr
         
     def inv(self):
         return permutation([self.arr.index(i) for i in range(self.len)])
