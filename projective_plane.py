@@ -21,9 +21,11 @@ import math
 from matplotlib.textpath import TextPath
 from matplotlib.patches import PathPatch
 from matplotlib.transforms import Affine2D
+from permutation import * 
 
 # vertex coords
 r = 3
+
 vertex_coordinates = {0:(r, 0),
                       1:(-1, 1),
                       2:(0, 1),
@@ -37,6 +39,23 @@ vertex_coordinates = {0:(r, 0),
                       10:(-r/np.sqrt(2), -r/np.sqrt(2)),
                       11:(0, -r),
                       12:(r/np.sqrt(2), -r/np.sqrt(2))}
+
+"""
+# Jacob Siehler's method
+vertex_coordinates = {0:(r, 0),
+                      1:(-1, 1),
+                      5:(0, 1),
+                      11:(1,1),
+                      2:(-1, 0),
+                      7:(0, 0),
+                      3:(1, 0),
+                      6:(-1, -1),
+                      8:(0, -1),
+                      9:(1, -1),
+                      4:(-r/np.sqrt(2), -r/np.sqrt(2)),
+                      12:(0, -r),
+                      10:(r/np.sqrt(2), -r/np.sqrt(2))}
+""" 
 
 def parabola(point1, point2, direction = np.array([1,-1]), c = 0.6, n_points = 100): 
     # rotate things so direction is the new y axis
@@ -125,6 +144,7 @@ def PG23():
     for i in range(13):
         edge_dict[i] = {}
 
+    # original lines based on the first enumeration of the vertices.
     lines = []
     lines.append((1,6,8,10))
     lines.append((1,2,3,0))
@@ -139,6 +159,13 @@ def PG23():
     lines.append((10,11,12,0))
     lines.append((3,4,8,12))
     lines.append((7,2,6,12))
+
+    """
+    # replacing the lines from the above Seihler's enumeration 
+    lines = []
+    for i in range(13):
+        lines.append([i, (i+1)%13, (i+5)%13, (i-2)%13])
+    """
 
     #  you want bezier edges between (2,7), (4,3), (1,6), (2,9)
     direction = np.array([-1,1])
@@ -268,7 +295,30 @@ def PG23():
 
     # plotting the straightlines
     #(1,2)
-    pair_list = [(1,2),(1,4),(1,5),(2,3),(2,4),(2,5),(2,6),(3,5),(3,6),(4,5),(4,7),(4,8),(5,6),(5,7),(5,8),(5,9),(6,8),(6,9),(7,8),(7,10),(8,9),(8,11),(9,12),(6,0)]
+    pair_list = [(1,2),
+                 (1,4),
+                 (1,5),
+                 (2,3),
+                 (2,4),
+                 (2,5),
+                 (2,6),
+                 (3,5),
+                 (3,6),
+                 (4,5),
+                 (4,7),
+                 (4,8),
+                 (5,6),
+                 (5,7),
+                 (5,8),
+                 (5,9),
+                 (6,8),
+                 (6,9),
+                 (7,8),
+                 (7,10),
+                 (8,9),
+                 (8,11),
+                 (9,12),
+                 (6,0)]
     for pair in pair_list:
         p0 = min(pair)
         p1 = max(pair)
@@ -292,6 +342,9 @@ def PG23():
     line, = ax.plot(x_coords, y_coords, color="black", linestyle="-")
     edge_dict[index_1][index_2] = line
     
+    # maps the enumeration into the one used by Siehler
+    mapping = [0,1,5,11,2,7,3,6,8,9,4,12,10]
+
     # plotting the points
     vertex_dict = {}
     label_dict = {}
@@ -320,13 +373,16 @@ def PG23():
                     )
         ax.add_patch(circle)
         #label = ax.annotate(str(vertex), xy=(vertex_coordinates[vertex][0],vertex_coordinates[vertex][1]), fontsize=5, fontweight='bold', ha="centre", color = 'white', zorder =30)
-        if vertex > 9:
+        if mapping[vertex] > 9:
             epsx = 0.13
         else:
             epsx = 0.07
         epsy = 0.07
         coords = np.array([vertex_coordinates[vertex][0],vertex_coordinates[vertex][1]]) - np.array([epsx, epsy])
-        text = TextPath((0,0), str(vertex), size = 0.2)
+        
+        # altered this line to plot labels in the Siehler enumeration.
+        # change made 27/4/26
+        text = TextPath((0,0), str(mapping[vertex]), size = 0.2)
         trans = Affine2D().translate(*coords)
         """
         # Get bounding box of tex

@@ -34,7 +34,7 @@ control_frame_bottom.grid(row = 1, column=1 , sticky='nsew')
 
 # the matplotlib window
 frame_plot = ttk.Frame(root)
-frame_plot.grid(row=0, column=1, sticky="nsew")
+frame_plot.grid(row=0, column=1, sticky="ns")
 
 # the text widget to the right
 frame_text = ttk.Frame(root)
@@ -42,8 +42,8 @@ frame_text.grid(row=0, column=2, sticky="nsew")
 
 # Make the window resize properly
 root.rowconfigure(0, weight=3)
-root.columnconfigure(1, weight=1)
-root.columnconfigure(2, weight=5)
+root.columnconfigure(1, weight=3)
+root.columnconfigure(2, weight=3)
 
 # --- Matplotlib figure ---
 fig, ax, label_node_map, vertex_dict, edge_dict, label_dict, lines  = PG23()
