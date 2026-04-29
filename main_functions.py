@@ -32,15 +32,17 @@ def open_markdown(root, md_path):
     html_label.pack(fill="both", expand=True, padx=10, pady=10)
     html_label.fit_height()
 
-def get_edges(node1, node2, edge_dict, lines):
+# creating a line to edges mapping for the animation
+
+
+def get_edges(node1, node2, line_to_edge_dict, lines):
+    print('line to edge dict')
+    print(line_to_edge_dict)
+    print('getting edges for nodes', node1, node2)
     for line in lines:
         if node1 in line and node2 in line:
             break # by the axioms of projective geometry, this will always break
-    edges = []
-    for i in range(len(line) - 1):
-        start_point = min(line[i], line[i+1])
-        end_point = max(line[i], line[i+1])
-        edges.append(edge_dict[start_point][end_point])
+    edges = line_to_edge_dict[line]
     return edges, line
 
 def epsilon(node_label):
@@ -177,9 +179,9 @@ def set_permutation(permutation, label_node_map, vertex_dict, label_dict, root, 
     pass
 
 # Swap node colors with animation
-def swap_and_animate(node1, node2, label_node_map, vertex_dict, edge_dict, label_dict, lines, root, canvas, ax, edge_flash = True):
+def swap_and_animate(node1, node2, label_node_map, vertex_dict, edge_dict, label_dict, lines, root, canvas, ax, line_to_edge_dict, edge_flash = True):
     # find the edges 
-    flashing_edges, flashing_nodes = get_edges(node1, node2, edge_dict, lines)
+    flashing_edges, flashing_nodes = get_edges(node1, node2, line_to_edge_dict, lines)
     print('line in the projective plane', flashing_nodes)
     for _ in range(2):
         # m

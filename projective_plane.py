@@ -15,6 +15,7 @@ Scripts used to plot the PG(2,3) projective plane.
 3 5 8 11
 2 6 8 10
 """
+from networkx import edges
 import numpy as np 
 import matplotlib.pyplot as plt 
 import math 
@@ -24,7 +25,7 @@ from matplotlib.transforms import Affine2D
 from permutation import * 
 
 # vertex coords
-r = 3
+r = 3 # radius for how far we put the points at infinty. 
 
 vertex_coordinates = {0:(r, 0),
                       1:(-1, 1),
@@ -111,8 +112,8 @@ def Bezier_curve(P_list, N = 10):
     b_curve = P_mat@T_mat 
     return b_curve 
 
-def straight_line(index_1, index_2):
-    return [[vertex_coordinates[index_1][0], vertex_coordinates[index_2][0]],[vertex_coordinates[index_1][1],vertex_coordinates[index_2][1]]]
+def straight_line(index_1, index_2, vertex_coordinates1 = vertex_coordinates, vertex_coordinates2 = vertex_coordinates):
+    return [[vertex_coordinates1[index_1][0], vertex_coordinates2[index_2][0]],[vertex_coordinates1[index_1][1],vertex_coordinates2[index_2][1]]]
 
 def circle_arc(index_1, index_2, centre = np.array([0,0])):
     p1 = np.array(vertex_coordinates[index_1])
@@ -341,9 +342,19 @@ def PG23():
     x_coords, y_coords = circle_arc(index_1, index_2)
     line, = ax.plot(x_coords, y_coords, color="black", linestyle="-")
     edge_dict[index_1][index_2] = line
+
+    line_to_edge_dict = {}
+    for line in lines:
+        edges = []
+        for i in range(len(line) - 1):
+            start_point = min(line[i], line[i+1])
+            end_point = max(line[i], line[i+1])
+            edges.append(edge_dict[start_point][end_point])
+        line_to_edge_dict[line] = edges
     
     # maps the enumeration into the one used by Siehler
-    mapping = [0,1,5,11,2,7,3,6,8,9,4,12,10]
+    #mapping = [0,1,5,11,2,7,3,6,8,9,4,12,10]
+    mapping = list(range(13))
 
     # plotting the points
     vertex_dict = {}
@@ -406,8 +417,10 @@ def PG23():
         vertex_dict[vertex] = circle
         label_dict[vertex] = text_patch
         label_node_map[vertex] = vertex
-
-    return fig, ax, label_node_map, vertex_dict, edge_dict, label_dict, lines 
+    for i in line_to_edge_dict:
+        print('line', i)
+        print('edges', line_to_edge_dict[i])
+    return fig, ax, label_node_map, vertex_dict, edge_dict, label_dict, lines, line_to_edge_dict 
 
 def draw_PG23_conway_layout():
     pass

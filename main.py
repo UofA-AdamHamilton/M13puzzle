@@ -11,6 +11,7 @@ import time
 import copy
 import numpy as np
 from projective_plane import PG23
+from projectiveplane_rotationally_symmetric import PG23_rotationally_symmetric
 from main_functions import open_markdown, swap_and_animate, close_window, set_permutation
 
 # --- Create main window ---
@@ -46,7 +47,8 @@ root.columnconfigure(1, weight=3)
 root.columnconfigure(2, weight=3)
 
 # --- Matplotlib figure ---
-fig, ax, label_node_map, vertex_dict, edge_dict, label_dict, lines  = PG23()
+#fig, ax, label_node_map, vertex_dict, edge_dict, label_dict, lines, line_to_edge_dict  = PG23()
+fig, ax, label_node_map, vertex_dict, edge_dict, label_dict, lines, line_to_edge_dict  = PG23_rotationally_symmetric()
 
 original_label_dict = copy.deepcopy(label_dict)
 original_vertex_dict = copy.deepcopy(vertex_dict)
@@ -185,7 +187,7 @@ def on_click(event):
             print('clicked nodes:', clicked_nodes)
             if len(clicked_nodes) == 1:
                 print('animate')
-                swap_and_animate(i, empty_node[0], label_node_map, vertex_dict, edge_dict, label_dict, lines, root, canvas, ax, edge_flash = True)
+                swap_and_animate(i, empty_node[0], label_node_map, vertex_dict, edge_dict, label_dict, lines, root, canvas, ax, line_to_edge_dict,edge_flash = True)
                 clicked_nodes.clear()
                 empty_node[0] =  i
                 text_widget.insert(tk.END, f"empty node is now {i}\n")
