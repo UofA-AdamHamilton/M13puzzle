@@ -78,7 +78,7 @@ ax.set_yticks([])
 canvas = FigureCanvasTkAgg(fig, master=frame_plot)
 canvas.draw()
 canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-
+ 
 # --- Dropdown callback ---
 def change_color(event=None):
     global edge_dict
@@ -93,7 +93,8 @@ def change_color(event=None):
 # --- Dropdown menu ---
 ttk.Label(control_frame, text="Select line color:").pack(pady=(0, 5))
 
-color_var = tk.StringVar(value="blue")
+color_var = tk.StringVar(value="black") # default color is black
+color = 'black' # initialise the color variable as black
 colors = ["black", "blue", "red", "green", "orange", "purple"]
 
 color_menu = ttk.Combobox(
@@ -112,8 +113,6 @@ def change_layout(event=None):
     global layout 
     global edge_dict
     global label_node_map
-
-    
 
     # if the old layout matches the new layout, do nothing
     old_layout = copy.copy(layout)
