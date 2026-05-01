@@ -14,6 +14,12 @@ import numpy as np
 from matplotlib.transforms import Affine2D
 import copy 
 
+def is_identity(permutation_dictionary):
+    for i in permutation_dictionary:
+        if permutation_dictionary[i] != i:
+            return False
+    return True
+
 def open_markdown(root, md_path):
     #md_path = "example.md"
     if not os.path.exists(md_path):

@@ -12,7 +12,7 @@ import copy
 import numpy as np
 from projective_plane import PG23
 from projectiveplane_rotationally_symmetric import PG23_rotationally_symmetric
-from main_functions import open_markdown, swap_and_animate, close_window, set_permutation
+from main_functions import open_markdown, swap_and_animate, close_window, set_permutation, is_identity
 
 # --- Create main window ---
 root = tk.Tk()
@@ -81,6 +81,8 @@ canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
 # --- Dropdown callback ---
 def change_color(event=None):
+    global edge_dict
+    global color
     color = color_var.get()
     for i in edge_dict.values():
         for j in i.values():
@@ -92,7 +94,7 @@ def change_color(event=None):
 ttk.Label(control_frame, text="Select line color:").pack(pady=(0, 5))
 
 color_var = tk.StringVar(value="blue")
-colors = ["black", "blue", "red", "green", "black", "orange", "purple"]
+colors = ["black", "blue", "red", "green", "orange", "purple"]
 
 color_menu = ttk.Combobox(
     control_frame,
@@ -103,18 +105,20 @@ color_menu = ttk.Combobox(
 color_menu.pack()
 color_menu.bind("<<ComboboxSelected>>", change_color)
 
-
 # --- Dropdown callback ---
 def change_layout(event=None):
-
+    global color
     global canvas
     global layout 
-    global on_click 
+    global edge_dict
+    global label_node_map
+
     
+
     # if the old layout matches the new layout, do nothing
     old_layout = copy.copy(layout)
     layout = layout_var.get()
-    if layout == old_layout:
+    if layout == old_layout and is_identity(label_node_map):
         print('no change in layout')
         return 
 
@@ -140,6 +144,12 @@ def change_layout(event=None):
         "ax": ax
     }
 
+    for i in edge_dict.values():
+        for j in i.values():
+            print(type(j))
+            j.set_color(color)
+    canvas.draw_idle()
+
     ax.set_title("Interactive Plot")
     ax.tick_params(
         #axis='',          # changes apply to the x-axis
@@ -154,7 +164,7 @@ def change_layout(event=None):
     clicked_nodes = []
     empty_node = [0]
     clear_text()
-    """
+
     def on_click(event):
         if event.inaxes != graph_data["ax"]:
             return
@@ -184,7 +194,6 @@ def change_layout(event=None):
                 print('permutation')
                 print(label_node_map)
                 break
-    """
             
     print(' ')
     canvas = FigureCanvasTkAgg(fig, master=frame_plot)
@@ -192,10 +201,7 @@ def change_layout(event=None):
     canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
     # Connect click event
     canvas.mpl_connect("button_press_event", on_click)
-    canvas.mpl_connect(
-    "button_press_event",
-    lambda event: on_click(event)
-)
+
 
 # --- Dropdown menu ---
 ttk.Label(control_frame, text="Select projective plane layout:").pack(pady=(0, 5))
@@ -244,14 +250,7 @@ ttk.Button(
 
 # reset button
 def reset():
-    open_markdown(root, 'documentation/instructions')
-    for i in range(13):
-        label_node_map[i] = i
-    vertex_dict = original_label_dict
-    label_dict = original_label_dict
-    print('resetting permutation')
-    canvas.draw()
-    root.update()
+    change_layout(event=None)
 ttk.Button(
     control_frame,
     text="Reset",
@@ -282,6 +281,7 @@ def clear_text():
 clear_button = ttk.Button(frame_text, text="Clear Text", command=clear_text)
 clear_button.pack(pady=5)
 
+""" 
 # On click: handle selection and swapping
 # Track clicked nodes and selected outline
 clicked_nodes = []
@@ -320,7 +320,7 @@ def on_click(event):
 
 # Connect click event
 canvas.mpl_connect("button_press_event", on_click)
-print(empty_node)
+print(empty_node) """
 
 
 # --- Start GUI ---
